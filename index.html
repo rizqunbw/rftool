@@ -26,11 +26,6 @@
 </header>
 
 <main>
-<section class="tool-grid">
-  <button class="tool-card active"><span class="tool-icon">DDS</span><strong>DDS Generator</strong><small>Patch 64×64 icon slots and export DXT1A</small></button>
-  <div class="tool-card soon"><span class="tool-icon">+</span><strong>More Tools</strong><small>Coming soon</small></div>
-</section>
-
 <section class="panel">
   <div class="panel-head">
     <div><div class="eyebrow">DDS GENERATOR</div><h2>Atlas Icon Patcher</h2></div>
@@ -39,14 +34,14 @@
 
   <div class="steps">
     <div class="step">
-      <h3>1. Upload source DDS</h3>
+      <h3>Source DDS</h3>
       <p class="muted">Expected atlas: 2048×2048, 64×64 icons, 32×32 grid.</p>
       <input id="ddsInput" type="file" accept=".dds,application/octet-stream">
       <div id="ddsInfo" class="status">No DDS loaded.</div>
     </div>
 
     <div class="step">
-      <h3>2. Choose database start index</h3>
+      <h3>Start index</h3>
       <div class="row">
         <label>DB Start Index<input id="startIndex" type="number" min="0" max="1023" value="429"></label>
         <label>Slot Size<input value="64 × 64" disabled></label>
@@ -55,7 +50,7 @@
     </div>
 
     <div class="step">
-      <h3>3. Upload replacement icons</h3>
+      <h3>Replacement icons</h3>
       <input id="iconInput" type="file" accept="image/png,image/webp,image/jpeg" multiple>
       <div id="iconInfo" class="status">No icons selected.</div>
       <div class="watermark-upload"><strong>Optional watermark</strong><p class="muted">Upload PNG/WebP with transparency. Apply it per icon in the queue below.</p><input id="watermarkInput" type="file" accept="image/png,image/webp"><div id="watermarkInfo" class="status">No watermark loaded.</div><div id="watermarkPreviewWrap" class="watermark-preview-wrap hidden"><img id="watermarkPreview" alt="Watermark preview"></div></div>
