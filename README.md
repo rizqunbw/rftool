@@ -33,3 +33,6 @@ Never commit a real password, session secret, or local `.env` file.
 ## Production
 
 https://rfonlinetools.vercel.app/
+
+
+<!-- deploy-trigger: reconnect-vercel-2026-10-27 -->
