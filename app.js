@@ -69,15 +69,21 @@ function detectVisibleBounds(img){
   }
   return maxX<0?{x:0,y:0,w:c.width,h:c.height}:{x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
 }
+function getWatermarkLayout(){
+  if(!watermarkImage)return null;
+  const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
+  const maxW=62,maxH=13,padBottom=1;
+  const scale=Math.min(maxW/b.w,maxH/b.h);
+  const w=Math.max(1,b.w*scale),h=Math.max(1,b.h*scale);
+  return {b,w,h,x:(64-w)/2,y:64-padBottom-h};
+}
+function drawWatermarkTo(ctx,x=0,y=0){
+  const l=getWatermarkLayout();if(!l)return;
+  ctx.drawImage(watermarkImage,l.b.x,l.b.y,l.b.w,l.b.h,x+l.x,y+l.y,l.w,l.h);
+}
 function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
-  if(it.watermark && watermarkImage){
-    const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
-    const padX=2,padBottom=1,maxW=64-padX*2,maxH=11.5;
-    const scale=Math.min(maxW/b.w,maxH/b.h);
-    const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
-    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x+(64-targetW)/2,y+64-padBottom-targetH,targetW,targetH);
-  }
+  if(it.watermark&&watermarkImage)drawWatermarkTo(actx,x,y);
 }
 function paintReplacements(){
   if(!sourceDDS||!icons.length){if(sourceDDS)$("#selectionSummary").textContent="No replacements selected.";return}
@@ -132,9 +138,7 @@ $("#watermarkInput").onchange=async()=>{
   try{
     watermarkImage=await loadImageFile(f);watermarkCrop=detectVisibleBounds(watermarkImage);watermarkUrl=URL.createObjectURL(f);
     const pc=$("#watermarkPreview"),pctx=pc.getContext("2d");pc.width=64;pc.height=64;pctx.clearRect(0,0,64,64);
-    const b=watermarkCrop,padX=2,padBottom=1,maxW=60,maxH=11.5,scale=Math.min(maxW/b.w,maxH/b.h);
-    const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
-    pctx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,(64-targetW)/2,64-padBottom-targetH,targetW,targetH);
+    drawWatermarkTo(pctx,0,0);
     $("#watermarkPreviewWrap").classList.remove("hidden");
     $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark per icon or use Give all watermarks.";$("#watermarkAll").disabled=false;
     renderQueue();if(sourceDDS){paintReplacements();drawOverlay()}
