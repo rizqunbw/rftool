@@ -73,7 +73,7 @@ function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
   if(it.watermark && watermarkImage){
     const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
-    const padX=3,padBottom=2,maxW=64-padX*2,maxH=10;
+    const padX=2,padBottom=1,maxW=64-padX*2,maxH=11.5;
     const scale=Math.min(maxW/b.w,maxH/b.h);
     const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
     actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x+(64-targetW)/2,y+64-padBottom-targetH,targetW,targetH);
@@ -132,7 +132,7 @@ $("#watermarkInput").onchange=async()=>{
   try{
     watermarkImage=await loadImageFile(f);watermarkCrop=detectVisibleBounds(watermarkImage);watermarkUrl=URL.createObjectURL(f);
     const pc=$("#watermarkPreview"),pctx=pc.getContext("2d");pc.width=64;pc.height=64;pctx.clearRect(0,0,64,64);
-    const b=watermarkCrop,padX=3,padBottom=2,maxW=58,maxH=10,scale=Math.min(maxW/b.w,maxH/b.h);
+    const b=watermarkCrop,padX=2,padBottom=1,maxW=60,maxH=11.5,scale=Math.min(maxW/b.w,maxH/b.h);
     const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
     pctx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,(64-targetW)/2,64-padBottom-targetH,targetW,targetH);
     $("#watermarkPreviewWrap").classList.remove("hidden");
