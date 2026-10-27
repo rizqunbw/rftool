@@ -45,6 +45,9 @@ function parseDDS(buf){
 }
 function renderSource(dds){
   atlasCanvas.width=dds.width;atlasCanvas.height=dds.height;overlayCanvas.width=dds.width;overlayCanvas.height=dds.height;
+  const shell=document.querySelector(".canvas-shell");
+  shell.style.setProperty("--atlas-width",dds.width+"px");
+  shell.style.setProperty("--atlas-height",dds.height+"px");
   actx.putImageData(new ImageData(dds.pixels,dds.width,dds.height),0,0);paintReplacements();drawOverlay();
 }
 function drawOverlay(){
