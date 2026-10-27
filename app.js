@@ -79,7 +79,12 @@ function getWatermarkLayout(){
 }
 function drawWatermarkTo(ctx,x=0,y=0){
   const l=getWatermarkLayout();if(!l)return;
-  ctx.drawImage(watermarkImage,l.b.x,l.b.y,l.b.w,l.b.h,x+l.x,y+l.y,l.w,l.h);
+  ctx.save();
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+  const dx=Math.round(x+l.x),dy=Math.round(y+l.y),dw=Math.round(l.w),dh=Math.round(l.h);
+  ctx.drawImage(watermarkImage,l.b.x,l.b.y,l.b.w,l.b.h,dx,dy,dw,dh);
+  ctx.restore();
 }
 function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
@@ -111,6 +116,7 @@ function renderQueue(){
     const card=document.createElement("div");card.className="queue-card";card.draggable=true;card.dataset.index=i;
     card.innerHTML='<span class="queue-number">#'+(i+1)+' · DB '+(start+i)+'</span><div class="queue-thumb-wrap"><canvas class="queue-thumb-canvas" width="64" height="64"></canvas></div><div class="queue-meta"><span class="queue-name" title="'+it.file.name+'">'+it.file.name+'</span><label class="queue-watermark"><input type="checkbox" '+(it.watermark?"checked":"")+' '+(!watermarkImage?"disabled":"")+'> Watermark</label></div>';
     const qc=card.querySelector(".queue-thumb-canvas"),qctx=qc.getContext("2d");
+    qctx.imageSmoothingEnabled=true;qctx.imageSmoothingQuality="high";
     qctx.drawImage(it.image,0,0,64,64);
     if(it.watermark&&watermarkImage)drawWatermarkTo(qctx,0,0);
     const check=card.querySelector(".queue-watermark input");
