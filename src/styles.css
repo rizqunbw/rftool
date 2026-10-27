@@ -119,3 +119,9 @@ html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
  .login-form .primary{width:100%;max-width:100%;font-size:16px;white-space:normal}
  .auth-switch{font-size:13px;line-height:1.4;white-space:normal;padding-inline:4px}
 }
+
+.captcha-label{gap:8px!important}
+.captcha-row{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;width:100%}
+.captcha-row strong{min-width:72px;padding:0 2px;font-size:15px;color:#fff;white-space:nowrap}
+.captcha-row input{min-width:0}
+@media(max-width:600px){.captcha-row{grid-template-columns:72px minmax(0,1fr)}.captcha-row input{font-size:16px}}
