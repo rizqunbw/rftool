@@ -1,6 +1,7 @@
 const $=s=>document.querySelector(s);
 const loginView=$("#loginView"),appView=$("#appView"),ddsInput=$("#ddsInput"),iconInput=$("#iconInput"),startIndex=$("#startIndex"),atlasCanvas=$("#atlasCanvas"),overlayCanvas=$("#overlayCanvas"),actx=atlasCanvas.getContext("2d",{willReadFrequently:true}),octx=overlayCanvas.getContext("2d"),exportBtn=$("#exportBtn");
-let sourceDDS=null,icons=[];\nlet watermarkImage=null,watermarkUrl=null;
+let sourceDDS=null,icons=[];
+let watermarkImage=null,watermarkUrl=null;
 
 function setAuth(ok){loginView.classList.toggle("hidden",ok);appView.classList.toggle("hidden",!ok)}
 async function checkSession(){try{const r=await fetch("/api/session",{credentials:"same-origin"});setAuth(r.ok)}catch{setAuth(false)}}
