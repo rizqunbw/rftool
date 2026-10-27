@@ -117,7 +117,8 @@ $("#watermarkInput").onchange=async()=>{
     renderQueue();if(sourceDDS)renderSource(sourceDDS);
   }catch{$("#watermarkInfo").textContent="Failed to load watermark."}
 };
-$("#watermarkAll").onchange=()=>{const on=$("#watermarkAll").checked;icons.forEach(x=>x.watermark=on);renderQueue();if(sourceDDS)renderSource(sourceDDS)};\nstartIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
+$("#watermarkAll").onchange=()=>{const on=$("#watermarkAll").checked;icons.forEach(x=>x.watermark=on);renderQueue();if(sourceDDS)renderSource(sourceDDS)};
+startIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
 $("#showDb").onchange=drawOverlay;$("#showSlice").onchange=drawOverlay;
 function applyAtlasZoom(){const z=Number($("#atlasZoom")?.value||2);document.querySelector(".canvas-shell").style.setProperty("--atlas-zoom",z)}
 $("#atlasZoom").onchange=applyAtlasZoom;applyAtlasZoom();
