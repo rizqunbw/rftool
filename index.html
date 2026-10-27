@@ -57,11 +57,11 @@
     <div class="step">
       <h3>3. Upload replacement icons</h3>
       <input id="iconInput" type="file" accept="image/png,image/webp,image/jpeg" multiple>
-      <div id="iconInfo" class="status">No icons selected.</div>
+      <div id="iconInfo" class="status">No icons selected.</div>\n      <label class="check watermark-toggle"><input id="watermarkEnabled" type="checkbox" checked> Add NEVERMIND watermark at bottom</label>
     </div>
   </div>
 
-  <div class="preview-wrap">
+  <div id="queueSection" class="queue-section hidden">\n    <div class="queue-head"><div><strong>Replacement Queue</strong><p class="muted">Drag cards to reorder. Numbers map sequentially to DB indexes.</p></div></div>\n    <div id="iconQueue" class="icon-queue"></div>\n  </div>\n\n  <div class="preview-wrap">
     <div class="preview-toolbar">
       <div><strong>Atlas Preview</strong> <span id="selectionSummary" class="muted">Load a DDS to begin.</span></div>
       <div class="row compact">
