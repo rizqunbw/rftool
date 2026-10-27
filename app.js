@@ -80,6 +80,11 @@ ddsInput.onchange=async()=>{
     renderSource(sourceDDS);$("#ddsInfo").textContent="Loaded "+f.name+": "+sourceDDS.width+"×"+sourceDDS.height+", "+sourceDDS.fourCC+". "+(sourceDDS.width/64)+"×"+(sourceDDS.height/64)+" grid.";exportBtn.disabled=false;
   }catch(e){sourceDDS=null;exportBtn.disabled=true;$("#ddsInfo").textContent=e.message}
 };
+function syncWatermarkAll(){
+  const master=$("#watermarkAll");
+  if(!master)return;
+  master.checked=!!watermarkImage && icons.length>0 && icons.every(x=>x.watermark);
+}
 function renderQueue(){
   const box=$("#iconQueue"),section=$("#queueSection");box.innerHTML="";section.classList.toggle("hidden",!icons.length);
   const start=Number(startIndex.value)||0;
@@ -98,6 +103,7 @@ function renderQueue(){
     card.addEventListener("drop",e=>{e.preventDefault();const from=Number(document.querySelector(".queue-card.dragging")?.dataset.index),to=Number(card.dataset.index);if(Number.isNaN(from)||from===to)return;const [moved]=icons.splice(from,1);icons.splice(to,0,moved);renderQueue();if(sourceDDS)renderSource(sourceDDS)});
     box.appendChild(card);
   });
+  syncWatermarkAll();
 }
 iconInput.onchange=async()=>{
   icons.forEach(x=>x.url&&URL.revokeObjectURL(x.url));icons=[];
