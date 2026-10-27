@@ -1,6 +1,6 @@
 const $=s=>document.querySelector(s);
 const loginView=$("#loginView"),appView=$("#appView"),ddsInput=$("#ddsInput"),iconInput=$("#iconInput"),startIndex=$("#startIndex"),atlasCanvas=$("#atlasCanvas"),overlayCanvas=$("#overlayCanvas"),actx=atlasCanvas.getContext("2d",{willReadFrequently:true}),octx=overlayCanvas.getContext("2d"),exportBtn=$("#exportBtn");
-let sourceDDS=null,icons=[];
+let sourceDDS=null,icons=[];\nconst WATERMARK_SRC="/watermark.png";\nlet watermarkImage=null;
 
 function setAuth(ok){loginView.classList.toggle("hidden",ok);appView.classList.toggle("hidden",!ok)}
 async function checkSession(){try{const r=await fetch("/api/session",{credentials:"same-origin"});setAuth(r.ok)}catch{setAuth(false)}}
@@ -14,7 +14,7 @@ $("#loginBtn").onclick=async()=>{
 };
 $("#password").addEventListener("keydown",e=>{if(e.key==="Enter")$("#loginBtn").click()});
 $("#logoutBtn").onclick=async()=>{try{await fetch("/api/logout",{method:"POST",credentials:"same-origin"})}finally{setAuth(false)}};
-checkSession();
+checkSession();\n\nasync function loadWatermark(){try{watermarkImage=await new Promise((res,rej)=>{const img=new Image();img.onload=()=>res(img);img.onerror=rej;img.src=WATERMARK_SRC+"?v=1"});if(sourceDDS)renderSource(sourceDDS)}catch{watermarkImage=null}}\nloadWatermark();
 
 function readFourCC(v,o){return String.fromCharCode(v[o],v[o+1],v[o+2],v[o+3])}
 function rgb565(c){const r=((c>>11)&31)*255/31,g=((c>>5)&63)*255/63,b=(c&31)*255/31;return [r|0,g|0,b|0]}
@@ -74,7 +74,7 @@ iconInput.onchange=async()=>{
   $("#iconInfo").textContent=icons.length?icons.length+" replacement icon(s) loaded.":"No icons selected.";
   if(sourceDDS)renderSource(sourceDDS);
 };
-startIndex.oninput=()=>{if(sourceDDS)renderSource(sourceDDS)};
+startIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};\n$("#watermarkEnabled").onchange=()=>{if(sourceDDS)renderSource(sourceDDS)};
 $("#showDb").onchange=drawOverlay;$("#showSlice").onchange=drawOverlay;
 
 function to565(r,g,b){return ((r>>3)<<11)|((g>>2)<<5)|(b>>3)}
