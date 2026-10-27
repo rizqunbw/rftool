@@ -87,7 +87,15 @@ function drawWatermarkTo(ctx,x=0,y=0){
   ctx.restore();
 }
 function drawIconWithOptionalWatermark(it,x,y){
+  // Replacement rule: a new icon owns the entire 64x64 slot.
+  // Clear the previous DDS pixels first so transparent PNG pixels stay transparent.
+  actx.clearRect(x,y,64,64);
+  actx.save();
+  actx.globalCompositeOperation="copy";
+  actx.imageSmoothingEnabled=true;
+  actx.imageSmoothingQuality="high";
   actx.drawImage(it.image,x,y,64,64);
+  actx.restore();
   if(it.watermark&&watermarkImage)drawWatermarkTo(actx,x,y);
 }
 function paintReplacements(){
