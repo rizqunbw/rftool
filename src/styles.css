@@ -71,3 +71,20 @@ button,input,select{min-height:36px}
 .boot-progress{position:relative;width:128px;height:2px;margin-top:18px;overflow:hidden;background:#1c1c1c;border-radius:99px}
 .boot-progress i{position:absolute;inset:0 auto 0 0;width:46px;background:#fff;border-radius:99px}
 .primary:disabled{opacity:.55;cursor:wait}
+
+.auth-switch{width:100%;margin-top:12px;border:0;background:transparent;color:#8b8b8b;font-size:11px;cursor:pointer}
+.auth-switch:hover{color:#fff}
+.header-actions{display:flex;align-items:center;gap:8px}
+.nav-active{border:1px solid #fff;background:#fff;color:#050505;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.admin-card{border:1px solid var(--line);background:#080808;border-radius:12px;overflow:hidden}
+.admin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:22px;border-bottom:1px solid var(--line)}
+.admin-head h2{margin:0 0 6px;font-size:24px}
+.admin-list{display:grid}
+.admin-invoice{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(160px,.8fr) auto;align-items:center;gap:18px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.admin-invoice:last-child{border-bottom:0}
+.admin-invoice>div:not(.admin-actions){display:grid;gap:4px;min-width:0}
+.admin-invoice strong{font-size:12px}.admin-invoice span{font-size:10px;color:#777;overflow:hidden;text-overflow:ellipsis}
+.admin-actions{display:flex;justify-content:flex-end;gap:8px}
+.danger-btn{color:#ff8585}
+.admin-empty{padding:44px 22px;text-align:center;color:#777;font-size:12px}
+@media(max-width:720px){.app-header{height:auto;min-height:56px;padding-block:10px;align-items:flex-start}.header-actions{flex-wrap:wrap;justify-content:flex-end}.admin-head,.admin-invoice{grid-template-columns:1fr;display:grid}.admin-actions{justify-content:flex-start}}
