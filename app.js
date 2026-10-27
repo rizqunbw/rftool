@@ -73,9 +73,10 @@ function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
   if(it.watermark && watermarkImage){
     const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
-    const padX=2,padBottom=1,targetW=64-padX*2;
-    const targetH=Math.max(1,b.h*(targetW/b.w));
-    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x+padX,y+64-padBottom-targetH,targetW,targetH);
+    const padX=3,padBottom=2,maxW=64-padX*2,maxH=10;
+    const scale=Math.min(maxW/b.w,maxH/b.h);
+    const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
+    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x+(64-targetW)/2,y+64-padBottom-targetH,targetW,targetH);
   }
 }
 function paintReplacements(){
@@ -107,7 +108,7 @@ function renderQueue(){
     const check=card.querySelector(".queue-watermark input");
     check.addEventListener("pointerdown",e=>e.stopPropagation());
     check.addEventListener("click",e=>e.stopPropagation());
-    check.addEventListener("change",()=>{it.watermark=check.checked;renderQueue();if(sourceDDS)renderSource(sourceDDS)});
+    check.addEventListener("change",()=>{it.watermark=check.checked;renderQueue();if(sourceDDS){paintReplacements();drawOverlay()}});
     card.addEventListener("dragstart",e=>{if(e.target===check){e.preventDefault();return}card.classList.add("dragging")});
     card.addEventListener("dragend",()=>{card.classList.remove("dragging");document.querySelectorAll(".drag-over").forEach(x=>x.classList.remove("drag-over"))});
     card.addEventListener("dragover",e=>{e.preventDefault();card.classList.add("drag-over")});
@@ -130,15 +131,16 @@ $("#watermarkInput").onchange=async()=>{
   if(!f){$("#watermarkInfo").textContent="No watermark loaded.";$("#watermarkPreviewWrap").classList.add("hidden");$("#watermarkAll").checked=false;$("#watermarkAll").disabled=true;icons.forEach(x=>x.watermark=false);renderQueue();if(sourceDDS)renderSource(sourceDDS);return}
   try{
     watermarkImage=await loadImageFile(f);watermarkCrop=detectVisibleBounds(watermarkImage);watermarkUrl=URL.createObjectURL(f);
-    const pc=$("#watermarkPreview"),pctx=pc.getContext("2d");pctx.clearRect(0,0,64,64);
-    const b=watermarkCrop,padX=2,padBottom=1,targetW=60,targetH=Math.max(1,b.h*(targetW/b.w));
-    pctx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,padX,64-padBottom-targetH,targetW,targetH);
+    const pc=$("#watermarkPreview"),pctx=pc.getContext("2d");pc.width=64;pc.height=64;pctx.clearRect(0,0,64,64);
+    const b=watermarkCrop,padX=3,padBottom=2,maxW=58,maxH=10,scale=Math.min(maxW/b.w,maxH/b.h);
+    const targetW=Math.max(1,b.w*scale),targetH=Math.max(1,b.h*scale);
+    pctx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,(64-targetW)/2,64-padBottom-targetH,targetW,targetH);
     $("#watermarkPreviewWrap").classList.remove("hidden");
     $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark per icon or use Give all watermarks.";$("#watermarkAll").disabled=false;
-    renderQueue();if(sourceDDS)renderSource(sourceDDS);
+    renderQueue();if(sourceDDS){paintReplacements();drawOverlay()}
   }catch{$("#watermarkInfo").textContent="Failed to load watermark."}
 };
-$("#watermarkAll").onchange=()=>{const on=$("#watermarkAll").checked;icons.forEach(x=>x.watermark=on);renderQueue();if(sourceDDS)renderSource(sourceDDS)};
+$("#watermarkAll").onchange=()=>{const on=$("#watermarkAll").checked;icons.forEach(x=>x.watermark=on);renderQueue();if(sourceDDS){paintReplacements();drawOverlay()}};
 startIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
 $("#showDb").onchange=drawOverlay;$("#showSlice").onchange=drawOverlay;
 function applyAtlasZoom(){const z=Number($("#atlasZoom")?.value||2);document.querySelector(".canvas-shell").style.setProperty("--atlas-zoom",z)}
