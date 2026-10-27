@@ -86,7 +86,7 @@ function renderQueue(){
   icons.forEach((it,i)=>{
     const card=document.createElement("div");card.className="queue-card";card.draggable=true;card.dataset.index=i;
     const wm=it.watermark&&watermarkUrl?'<img class="queue-wm-preview" src="'+watermarkUrl+'" alt="">':"";
-    card.innerHTML='<span class="queue-number">'+(i+1)+'</span><div class="queue-thumb-wrap"><img class="queue-thumb" src="'+it.url+'" alt="">'+wm+'</div><div class="queue-meta"><strong>DB '+(start+i)+'</strong><span class="queue-name" title="'+it.file.name+'">'+it.file.name+'</span><label class="queue-watermark"><input type="checkbox" '+(it.watermark?"checked":"")+' '+(!watermarkImage?"disabled":"")+'> Watermark</label></div>';
+    card.innerHTML='<span class="queue-number">#'+(i+1)+' · DB '+(start+i)+'</span><div class="queue-thumb-wrap"><img class="queue-thumb" src="'+it.url+'" alt="">'+wm+'</div><div class="queue-meta"><span class="queue-name" title="'+it.file.name+'">'+it.file.name+'</span><label class="queue-watermark"><input type="checkbox" '+(it.watermark?"checked":"")+' '+(!watermarkImage?"disabled":"")+'> Watermark</label></div>';
     const check=card.querySelector(".queue-watermark input");
     check.addEventListener("pointerdown",e=>e.stopPropagation());
     check.addEventListener("click",e=>e.stopPropagation());
@@ -119,6 +119,8 @@ $("#watermarkInput").onchange=async()=>{
 };
 startIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
 $("#showDb").onchange=drawOverlay;$("#showSlice").onchange=drawOverlay;
+function applyAtlasZoom(){const z=Number($("#atlasZoom")?.value||2);document.querySelector(".canvas-shell").style.setProperty("--atlas-zoom",z)}
+$("#atlasZoom").onchange=applyAtlasZoom;applyAtlasZoom();
 
 function to565(r,g,b){return ((r>>3)<<11)|((g>>2)<<5)|(b>>3)}
 function dist(a,b){const dr=a[0]-b[0],dg=a[1]-b[1],db=a[2]-b[2];return dr*dr+dg*dg+db*db}
