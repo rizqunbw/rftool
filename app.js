@@ -109,15 +109,15 @@ $("#watermarkInput").onchange=async()=>{
   const f=$("#watermarkInput").files[0];
   if(watermarkUrl){URL.revokeObjectURL(watermarkUrl);watermarkUrl=null}
   watermarkImage=null;
-  if(!f){$("#watermarkInfo").textContent="No watermark loaded.";$("#watermarkPreviewWrap").classList.add("hidden");icons.forEach(x=>x.watermark=false);renderQueue();if(sourceDDS)renderSource(sourceDDS);return}
+  if(!f){$("#watermarkInfo").textContent="No watermark loaded.";$("#watermarkPreviewWrap").classList.add("hidden");$("#watermarkAll").checked=false;$("#watermarkAll").disabled=true;icons.forEach(x=>x.watermark=false);renderQueue();if(sourceDDS)renderSource(sourceDDS);return}
   try{
     watermarkImage=await loadImageFile(f);watermarkUrl=URL.createObjectURL(f);
     $("#watermarkPreview").src=watermarkUrl;$("#watermarkPreviewWrap").classList.remove("hidden");
-    $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark on each icon that should use it.";
+    $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark per icon or use Give all watermarks.";$("#watermarkAll").disabled=false;
     renderQueue();if(sourceDDS)renderSource(sourceDDS);
   }catch{$("#watermarkInfo").textContent="Failed to load watermark."}
 };
-startIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
+$("#watermarkAll").onchange=()=>{const on=$("#watermarkAll").checked;icons.forEach(x=>x.watermark=on);renderQueue();if(sourceDDS)renderSource(sourceDDS)};\nstartIndex.oninput=()=>{renderQueue();if(sourceDDS)renderSource(sourceDDS)};
 $("#showDb").onchange=drawOverlay;$("#showSlice").onchange=drawOverlay;
 function applyAtlasZoom(){const z=Number($("#atlasZoom")?.value||2);document.querySelector(".canvas-shell").style.setProperty("--atlas-zoom",z)}
 $("#atlasZoom").onchange=applyAtlasZoom;applyAtlasZoom();
