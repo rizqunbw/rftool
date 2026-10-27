@@ -91,7 +91,7 @@ function drawIconWithOptionalWatermark(it,x,y){
   // Clear the previous DDS pixels first so transparent PNG pixels stay transparent.
   actx.clearRect(x,y,64,64);
   actx.save();
-  actx.globalCompositeOperation="copy";
+  actx.globalCompositeOperation="source-over";
   actx.imageSmoothingEnabled=true;
   actx.imageSmoothingQuality="high";
   actx.drawImage(it.image,x,y,64,64);
