@@ -1,7 +1,7 @@
 const $=s=>document.querySelector(s);
 const loginView=$("#loginView"),appView=$("#appView"),ddsInput=$("#ddsInput"),iconInput=$("#iconInput"),startIndex=$("#startIndex"),atlasCanvas=$("#atlasCanvas"),overlayCanvas=$("#overlayCanvas"),actx=atlasCanvas.getContext("2d",{willReadFrequently:true}),octx=overlayCanvas.getContext("2d"),exportBtn=$("#exportBtn");
 let sourceDDS=null,icons=[];
-let watermarkImage=null,watermarkUrl=null;
+let watermarkImage=null,watermarkUrl=null,watermarkCrop=null;
 
 function setAuth(ok){loginView.classList.toggle("hidden",ok);appView.classList.toggle("hidden",!ok)}
 async function checkSession(){try{const r=await fetch("/api/session",{credentials:"same-origin"});setAuth(r.ok)}catch{setAuth(false)}}
@@ -57,13 +57,25 @@ function drawOverlay(){
   }
   if(icons.length){const start=Number(startIndex.value)||0;icons.forEach((_,i)=>{const idx=start+i;if(idx>=cols*rows)return;const x=(idx%cols)*64,y=Math.floor(idx/cols)*64;octx.strokeStyle="#7cff9b";octx.lineWidth=3;octx.strokeRect(x+1.5,y+1.5,61,61)})}
 }
+function detectVisibleBounds(img){
+  const c=document.createElement("canvas"),ctx=c.getContext("2d",{willReadFrequently:true});
+  c.width=img.naturalWidth;c.height=img.naturalHeight;ctx.drawImage(img,0,0);
+  const d=ctx.getImageData(0,0,c.width,c.height).data;
+  let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
+  for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+    if(d[(y*c.width+x)*4+3]>8){
+      if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
+    }
+  }
+  return maxX<0?{x:0,y:0,w:c.width,h:c.height}:{x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+}
 function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
   if(it.watermark && watermarkImage){
-    const maxW=62,maxH=14;
-    const ratio=Math.min(maxW/watermarkImage.naturalWidth,maxH/watermarkImage.naturalHeight);
-    const w=Math.max(1,watermarkImage.naturalWidth*ratio),h=Math.max(1,watermarkImage.naturalHeight*ratio);
-    actx.drawImage(watermarkImage,x+(64-w)/2,y+64-h-1,w,h);
+    const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
+    const targetW=64;
+    const targetH=Math.max(1,b.h*(targetW/b.w));
+    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x,y+64-targetH,targetW,targetH);
   }
 }
 function paintReplacements(){
@@ -114,11 +126,11 @@ iconInput.onchange=async()=>{
 $("#watermarkInput").onchange=async()=>{
   const f=$("#watermarkInput").files[0];
   if(watermarkUrl){URL.revokeObjectURL(watermarkUrl);watermarkUrl=null}
-  watermarkImage=null;
+  watermarkImage=null;watermarkCrop=null;
   if(!f){$("#watermarkInfo").textContent="No watermark loaded.";$("#watermarkPreviewWrap").classList.add("hidden");$("#watermarkAll").checked=false;$("#watermarkAll").disabled=true;icons.forEach(x=>x.watermark=false);renderQueue();if(sourceDDS)renderSource(sourceDDS);return}
   try{
-    watermarkImage=await loadImageFile(f);watermarkUrl=URL.createObjectURL(f);
-    $("#watermarkPreview").src=watermarkUrl;$("#watermarkPreviewWrap").classList.remove("hidden");
+    watermarkImage=await loadImageFile(f);watermarkCrop=detectVisibleBounds(watermarkImage);watermarkUrl=URL.createObjectURL(f);
+    $("#watermarkPreview").src=watermarkUrl;$("#watermarkPreview").style.objectFit="contain";$("#watermarkPreviewWrap").classList.remove("hidden");
     $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark per icon or use Give all watermarks.";$("#watermarkAll").disabled=false;
     renderQueue();if(sourceDDS)renderSource(sourceDDS);
   }catch{$("#watermarkInfo").textContent="Failed to load watermark."}
