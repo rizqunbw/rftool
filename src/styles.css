@@ -106,3 +106,16 @@ button,input,select{min-height:36px}
 .bank-details{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden}.bank-details div{display:grid;gap:6px;padding:15px;border-right:1px solid var(--line)}.bank-details div:last-child{border-right:0}.bank-details strong{font-size:12px;word-break:break-word}
 .whatsapp-btn{min-height:48px}.waiting-box{display:grid;gap:5px;padding:15px;border:1px solid var(--line);border-radius:10px}.waiting-box strong{font-size:12px}.waiting-box span{font-size:10px;color:#777}
 @media(max-width:680px){.billing-main{padding:50px 0}.feature-strip{grid-template-columns:1fr 1fr}.feature-strip div:nth-child(2){border-right:0}.feature-strip div:nth-child(-n+2){border-bottom:1px solid var(--line)}.bank-details{grid-template-columns:1fr}.bank-details div{border-right:0;border-bottom:1px solid var(--line)}.bank-details div:last-child{border-bottom:0}.invoice-top{display:grid}}
+
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
+@media(max-width:600px){
+ .login-shell{display:flex;align-items:center;justify-content:center;width:100%;min-height:100dvh;padding:16px}
+ .login-panel{width:100%;max-width:400px;min-width:0;padding:20px;border-radius:12px;overflow:hidden}
+ .login-panel h1{font-size:28px;line-height:1.05;overflow-wrap:anywhere}
+ .login-panel .sub{font-size:13px;overflow-wrap:anywhere}
+ .login-form{width:100%;min-width:0}
+ .login-form label{width:100%;min-width:0}
+ .login-form input{display:block;width:100%;max-width:100%;min-width:0;font-size:16px;line-height:1.2;padding:12px}
+ .login-form .primary{width:100%;max-width:100%;font-size:16px;white-space:normal}
+ .auth-switch{font-size:13px;line-height:1.4;white-space:normal;padding-inline:4px}
+}
