@@ -17,3 +17,6 @@
 
 #watermarkPreview{display:block!important;width:64px!important;height:64px!important;max-width:none!important;object-fit:unset!important}
 .watermark-preview-wrap.hidden{display:none!important}
+
+.queue-thumb-canvas{display:block;width:90px;height:90px;image-rendering:auto;background:#000}
+.queue-wm-preview{display:none!important}
