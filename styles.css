@@ -7,7 +7,7 @@
 .zoom-control{display:flex;align-items:center;gap:6px;margin:0;font-size:11px}
 .zoom-control select{background:#11151a;color:#ddd;border:1px solid #3a4048;border-radius:4px;padding:4px 6px}
 .canvas-shell{--atlas-zoom:2;min-height:420px}
-.canvas-shell canvas{width:calc(2048px * var(--atlas-zoom))!important;height:calc(2048px * var(--atlas-zoom))!important;max-width:none!important}
+.canvas-shell canvas{width:calc(var(--atlas-width, 2048px) * var(--atlas-zoom))!important;height:calc(var(--atlas-height, 2048px) * var(--atlas-zoom))!important;max-width:none!important}
 
 .watermark-all{margin-top:8px!important;width:max-content;color:#ddd}
 .watermark-all input{margin:0;padding:0}
