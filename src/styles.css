@@ -125,3 +125,14 @@ html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
 .captcha-row strong{min-width:72px;padding:0 2px;font-size:15px;color:#fff;white-space:nowrap}
 .captcha-row input{min-width:0}
 @media(max-width:600px){.captcha-row{grid-template-columns:72px minmax(0,1fr)}.captcha-row input{font-size:16px}}
+
+.admin-section{border-top:1px solid var(--line);padding:20px}
+.admin-section:first-of-type{border-top:0}
+.admin-section>.section-head{margin-bottom:12px}
+.subscription-row{grid-template-columns:minmax(240px,1.4fr) minmax(130px,.6fr) auto}
+.sub-controls input{width:76px;min-height:38px;border:1px solid var(--line);border-radius:8px;background:#050505;color:#fff;padding:0 10px;font-size:12px}
+.admin-log-list{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.admin-log{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.admin-log:last-child{border-bottom:0}.admin-log>div{display:grid;gap:3px}.admin-log>div:last-child{text-align:right}
+.admin-log strong{font-size:11px;text-transform:capitalize}.admin-log span,.admin-log small{font-size:10px;color:#777}
+@media(max-width:720px){.subscription-row{grid-template-columns:1fr}.sub-controls{justify-content:flex-start;flex-wrap:wrap}.admin-log{grid-template-columns:1fr}.admin-log>div:last-child{text-align:left}}
