@@ -73,9 +73,9 @@ function drawIconWithOptionalWatermark(it,x,y){
   actx.drawImage(it.image,x,y,64,64);
   if(it.watermark && watermarkImage){
     const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
-    const targetW=64;
+    const padX=2,padBottom=1,targetW=64-padX*2;
     const targetH=Math.max(1,b.h*(targetW/b.w));
-    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x,y+64-targetH,targetW,targetH);
+    actx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,x+padX,y+64-padBottom-targetH,targetW,targetH);
   }
 }
 function paintReplacements(){
@@ -130,7 +130,10 @@ $("#watermarkInput").onchange=async()=>{
   if(!f){$("#watermarkInfo").textContent="No watermark loaded.";$("#watermarkPreviewWrap").classList.add("hidden");$("#watermarkAll").checked=false;$("#watermarkAll").disabled=true;icons.forEach(x=>x.watermark=false);renderQueue();if(sourceDDS)renderSource(sourceDDS);return}
   try{
     watermarkImage=await loadImageFile(f);watermarkCrop=detectVisibleBounds(watermarkImage);watermarkUrl=URL.createObjectURL(f);
-    $("#watermarkPreview").src=watermarkUrl;$("#watermarkPreview").style.objectFit="contain";$("#watermarkPreviewWrap").classList.remove("hidden");
+    const pc=$("#watermarkPreview"),pctx=pc.getContext("2d");pctx.clearRect(0,0,64,64);
+    const b=watermarkCrop,padX=2,padBottom=1,targetW=60,targetH=Math.max(1,b.h*(targetW/b.w));
+    pctx.drawImage(watermarkImage,b.x,b.y,b.w,b.h,padX,64-padBottom-targetH,targetW,targetH);
+    $("#watermarkPreviewWrap").classList.remove("hidden");
     $("#watermarkInfo").textContent="Loaded "+f.name+". Tick Watermark per icon or use Give all watermarks.";$("#watermarkAll").disabled=false;
     renderQueue();if(sourceDDS)renderSource(sourceDDS);
   }catch{$("#watermarkInfo").textContent="Failed to load watermark."}
