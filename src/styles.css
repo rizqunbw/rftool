@@ -136,3 +136,7 @@ html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
 .admin-log:last-child{border-bottom:0}.admin-log>div{display:grid;gap:3px}.admin-log>div:last-child{text-align:right}
 .admin-log strong{font-size:11px;text-transform:capitalize}.admin-log span,.admin-log small{font-size:10px;color:#777}
 @media(max-width:720px){.subscription-row{grid-template-columns:1fr}.sub-controls{justify-content:flex-start;flex-wrap:wrap}.admin-log{grid-template-columns:1fr}.admin-log>div:last-child{text-align:left}}
+
+.user-row{grid-template-columns:minmax(250px,1.3fr) minmax(220px,1fr) auto}
+.auth-log strong{letter-spacing:.02em}.auth-log span{overflow-wrap:anywhere}
+@media(max-width:720px){.user-row{grid-template-columns:1fr}.user-row .admin-actions{justify-content:flex-start}}
