@@ -72,7 +72,7 @@ function detectVisibleBounds(img){
 function getWatermarkLayout(){
   if(!watermarkImage)return null;
   const b=watermarkCrop||{x:0,y:0,w:watermarkImage.naturalWidth,h:watermarkImage.naturalHeight};
-  const maxW=62,maxH=13,padBottom=1;
+  const maxW=62,maxH=13,padBottom=2;
   const scale=Math.min(maxW/b.w,maxH/b.h);
   const w=Math.max(1,b.w*scale),h=Math.max(1,b.h*scale);
   return {b,w,h,x:(64-w)/2,y:64-padBottom-h};
@@ -109,8 +109,10 @@ function renderQueue(){
   const start=Number(startIndex.value)||0;
   icons.forEach((it,i)=>{
     const card=document.createElement("div");card.className="queue-card";card.draggable=true;card.dataset.index=i;
-    const wm=it.watermark&&watermarkUrl?'<img class="queue-wm-preview" src="'+watermarkUrl+'" alt="">':"";
-    card.innerHTML='<span class="queue-number">#'+(i+1)+' · DB '+(start+i)+'</span><div class="queue-thumb-wrap"><img class="queue-thumb" src="'+it.url+'" alt="">'+wm+'</div><div class="queue-meta"><span class="queue-name" title="'+it.file.name+'">'+it.file.name+'</span><label class="queue-watermark"><input type="checkbox" '+(it.watermark?"checked":"")+' '+(!watermarkImage?"disabled":"")+'> Watermark</label></div>';
+    card.innerHTML='<span class="queue-number">#'+(i+1)+' · DB '+(start+i)+'</span><div class="queue-thumb-wrap"><canvas class="queue-thumb-canvas" width="64" height="64"></canvas></div><div class="queue-meta"><span class="queue-name" title="'+it.file.name+'">'+it.file.name+'</span><label class="queue-watermark"><input type="checkbox" '+(it.watermark?"checked":"")+' '+(!watermarkImage?"disabled":"")+'> Watermark</label></div>';
+    const qc=card.querySelector(".queue-thumb-canvas"),qctx=qc.getContext("2d");
+    qctx.drawImage(it.image,0,0,64,64);
+    if(it.watermark&&watermarkImage)drawWatermarkTo(qctx,0,0);
     const check=card.querySelector(".queue-watermark input");
     check.addEventListener("pointerdown",e=>e.stopPropagation());
     check.addEventListener("click",e=>e.stopPropagation());
