@@ -1,40 +1,38 @@
 import React, { useState } from "react";
 import "./npc-calculator.css";
 
-const format = n => new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
+const fmt = n => new Intl.NumberFormat("id-ID",{maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
 export default function NPCPriceCalculator(){
  const [target,setTarget]=useState("1000000");
- const [quantity,setQuantity]=useState("250");
+ const [stack,setStack]=useState("250");
  const [tax,setTax]=useState("1");
- const [deduction,setDeduction]=useState("0.45");
- const [mode,setMode]=useState("net");
- const [rounding,setRounding]=useState("ceil");
- const amount=Math.max(0,Number(target)||0),qty=Math.max(1,Math.floor(Number(quantity)||1));
- const t=Math.min(100,Math.max(0,Number(tax)||0))/100;
- const d=Math.min(100,Math.max(0,Number(deduction)||0))/100;
- const taxFactor=1-t, deductionFactor=1-d;
- const effectiveFactor=taxFactor*deductionFactor;
- const raw=mode==="net"?(effectiveFactor>0?amount/effectiveFactor:0):amount;
- const price=rounding==="ceil"?Math.ceil(raw):rounding==="floor"?Math.floor(raw):Math.round(raw);
- const taxAmount=price*t,afterTax=price-taxAmount,cut=afterTax*d,received=afterTax-cut;
- const unit=price/qty;
+ const [testPrice,setTestPrice]=useState("8889");
+ const qty=Math.max(1,Math.floor(Number(stack)||1));
+ const rate=Math.min(100,Math.max(0,Number(tax)||0));
+ const factor=qty/2*(1-rate/100);
+ const wanted=Math.max(0,Math.floor(Number(target)||0));
+ const std=factor>0?Math.ceil(wanted/factor):0;
+ const actual=Math.floor(std*factor);
+ const test=Math.max(0,Math.floor(Number(testPrice)||0));
+ const testResult=Math.floor(test*factor);
  return <section className="npc-calc">
-  <div className="npc-calc-head"><div><p className="kicker">RF ONLINE TOOLS / CALCULATOR</p><h2>NPC Sell Price Calculator</h2><p className="sub">Calculate the required sale price for a stack of 250 items, including tax and deductions.</p></div><span className="mono-chip">250 PCS · 1% TAX</span></div>
+  <div className="npc-calc-head"><div><p className="kicker">RF ONLINE TOOLS / KALKULATOR</p><h2>Kalkulator Harga Jual ke NPC</h2><p className="sub">Cari StdPrice Excel berdasarkan target harga jual, max stack, dan pajak NPC.</p></div><span className="mono-chip">RUMUS RF ONLINE</span></div>
   <div className="npc-calc-grid"><div className="npc-calc-panel">
-   <label>Calculation mode<select value={mode} onChange={e=>setMode(e.target.value)}><option value="net">Target net amount → required sell price</option><option value="gross">Gross sell price → net amount</option></select></label>
-   <label>{mode==="net"?"Target amount received (net)":"Total selling price (gross)"}<input type="number" min="0" value={target} onChange={e=>setTarget(e.target.value)}/></label>
-   <div className="npc-calc-pair"><label>Quantity (pcs)<input type="number" min="1" step="1" value={quantity} onChange={e=>setQuantity(e.target.value)}/></label><label>NPC tax (%)<input type="number" min="0" max="100" step=".01" value={tax} onChange={e=>setTax(e.target.value)}/></label></div>
-   <label>Additional deduction (%)<input type="number" min="0" max="100" step=".01" value={deduction} onChange={e=>setDeduction(e.target.value)}/></label>
-   <label>Rounding<select value={rounding} onChange={e=>setRounding(e.target.value)}><option value="ceil">Round up (recommended for target net)</option><option value="round">Nearest whole number</option><option value="floor">Round down</option></select></label>
-   <button type="button" className="ghost" onClick={()=>{setTarget("1000000");setQuantity("250");setTax("1");setDeduction("0.45");setMode("net");setRounding("ceil")}}>Reset defaults</button>
+   <label>Max Stack (pcs)<input type="number" min="1" step="1" value={stack} onChange={e=>setStack(e.target.value)}/></label>
+   <label>Harga Jual ke NPC yang Diinginkan (Disena)<input type="number" min="0" step="1" value={target} onChange={e=>setTarget(e.target.value)}/></label>
+   <label>Pajak NPC (%)<input type="number" min="0" max="100" step=".01" value={tax} onChange={e=>setTax(e.target.value)}/></label>
+   <button type="button" className="ghost" onClick={()=>{setStack("250");setTarget("1000000");setTax("1");setTestPrice("8889")}}>Reset</button>
+   <div className="npc-formula">Rumus: StdPrice = ROUNDUP(Target × 2 / (Max Stack × (1 − Pajak/100)))<p>Rumus diuji terhadap contoh Gold Pig Statue: StdPrice 8.889, stack 250, pajak 1%, hasil 1.100.013 Disena. Pembulatan harga jual diasumsikan ke bawah.</p></div>
   </div><div className="npc-calc-panel npc-calc-results">
-    <p className="kicker">CALCULATED RESULT</p><div className="npc-result-primary"><span>Required total selling price</span><strong>{format(price)}</strong></div>
-    <div className="npc-stat"><span>Price per item</span><strong>{format(unit)}</strong></div>
-    <div className="npc-stat"><span>NPC tax ({format(t*100)}%)</span><strong>−{format(taxAmount)}</strong></div>
-    <div className="npc-stat"><span>After NPC tax</span><strong>{format(afterTax)}</strong></div>
-    <div className="npc-stat"><span>Additional deduction ({format(d*100)}%)</span><strong>−{format(cut)}</strong></div>
-    <div className="npc-stat npc-total"><span>Net amount received</span><strong>{format(received)}</strong></div>
-    <div className="npc-formula">Net = Gross × (1 − tax/100) × (1 − deduction/100)<p>Rates are applied sequentially. This is an adjustable model; verify the game's rounding and tax behavior before relying on a final in-game price.</p></div>
+    <p className="kicker">HASIL KALKULASI</p>
+    <div className="npc-result-primary"><span>StdPrice Excel yang Harus Diisi</span><strong>{factor>0?fmt(std):"Pajak tidak valid"}</strong></div>
+    <div className="npc-stat"><span>Max Stack</span><strong>{fmt(qty)} pcs</strong></div>
+    <div className="npc-stat"><span>Target Harga Jual</span><strong>{fmt(wanted)} Disena</strong></div>
+    <div className="npc-stat npc-total"><span>Perkiraan Harga Jual Aktual</span><strong>{factor>0?fmt(actual):"—"} Disena</strong></div>
+    <div className="npc-stat"><span>Selisih dari Target</span><strong>{factor>0?fmt(actual-wanted):"—"} Disena</strong></div>
+    <div className="npc-formula">CEK HARGA DARI STDPRICE EXCEL</div>
+    <label>StdPrice Excel yang Ingin Diuji<input type="number" min="0" step="1" value={testPrice} onChange={e=>setTestPrice(e.target.value)}/></label>
+    <div className="npc-result-primary"><span>Perkiraan Harga Jual ke NPC</span><strong>{fmt(testResult)} Disena</strong></div>
   </div></div>
  </section>;
 }
