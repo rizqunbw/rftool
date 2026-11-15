@@ -1,11 +1,33 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import "./npc-calculator.css";
 
 const fmt = n => new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
 const clean = v => String(v).replace(/,/g,"").replace(/[^0-9.]/g,"");
-const grouped = v => { const raw=clean(v); const [whole,...rest]=raw.split("."); return (whole ? Number(whole).toLocaleString("en-US") : "") + (rest.length ? "."+rest.join("") : ""); };
+const grouped = v => {
+ const raw=clean(v), [whole,...fraction]=raw.split(".");
+ const formatted=whole.replace(/\\B(?=(\\d{3})+(?!\\d))/g,",");
+ return formatted+(fraction.length?"."+fraction.join(""):"");
+};
 const numeric = v => Number(clean(v)) || 0;
-function NumberField({value,onChange,decimal=false,...props}){return <input {...props} type="text" inputMode={decimal?"decimal":"numeric"} value={grouped(value)} onChange={e=>onChange(clean(e.target.value))}/>}
+function NumberField({value,onChange,decimal=false,...props}){
+ const ref=useRef(null),pendingCaret=useRef(null);
+ const display=grouped(value);
+ useLayoutEffect(()=>{
+  if(pendingCaret.current===null||!ref.current)return;
+  const digits=pendingCaret.current;let pos=0,count=0;
+  while(pos<display.length&&count<digits){if(/[0-9.]/.test(display[pos]))count++;pos++;}
+  ref.current.setSelectionRange(pos,pos);
+  pendingCaret.current=null;
+ },[display]);
+ return <input {...props} ref={ref} type="text" inputMode={decimal?"decimal":"numeric"} value={display}
+  onChange={e=>{
+   const el=e.currentTarget,position=el.selectionStart??el.value.length;
+   const before=el.value.slice(0,position);
+   pendingCaret.current=(before.match(/[0-9.]/g)||[]).length;
+   const next=clean(el.value);
+   onChange(decimal?next:next.replace(/\\./g,""));
+  }}/>;
+}
 export default function NPCPriceCalculator(){
  const [target,setTarget]=useState("1000000");
  const [stack,setStack]=useState("250");
