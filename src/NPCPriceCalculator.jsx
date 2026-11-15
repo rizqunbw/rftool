@@ -43,6 +43,7 @@ export default function NPCPriceCalculator(){
  const [stack,setStack]=useState("250");
  const [tax,setTax]=useState("1");
  const [testPrice,setTestPrice]=useState("8889");
+ const [copied,setCopied]=useState(false);
  const qty=Math.max(1,Math.floor(numeric(stack)||1));
  const rate=Math.min(100,Math.max(0,numeric(tax)||0));
  const factor=qty/2*(1-rate/100);
@@ -61,7 +62,7 @@ export default function NPCPriceCalculator(){
    <div className="npc-formula">Rumus: StdPrice = ROUNDUP(Target × 2 / (Max Stack × (1 − Pajak/100)))<p>Rumus diuji terhadap contoh Gold Pig Statue: StdPrice 8.889, stack 250, pajak 1%, hasil 1.100.013 Disena. Pembulatan harga jual diasumsikan ke bawah.</p></div>
   </div><div className="npc-calc-panel npc-calc-results">
     <p className="kicker">HASIL KALKULASI</p>
-    <div className="npc-result-primary"><span>StdPrice Excel yang Harus Diisi</span><strong>{factor>0?fmt(std):"Pajak tidak valid"}</strong></div>
+    <div className="npc-result-primary"><span>StdPrice Excel yang Harus Diisi</span><div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}><strong>{factor>0?fmt(std):"Pajak tidak valid"}</strong><button type="button" className="ghost" disabled={factor<=0} onClick={async()=>{try{await navigator.clipboard.writeText(String(std));setCopied(true);setTimeout(()=>setCopied(false),1800)}catch{setCopied(false)}}}>{copied?"Tersalin ✓":"Copy"}</button></div></div>
     <div className="npc-stat"><span>Max Stack</span><strong>{fmt(qty)} pcs</strong></div>
     <div className="npc-stat"><span>Target Harga Jual</span><strong>{fmt(wanted)} Disena</strong></div>
     <div className="npc-stat npc-total"><span>Perkiraan Harga Jual Aktual</span><strong>{factor>0?fmt(actual):"—"} Disena</strong></div>
