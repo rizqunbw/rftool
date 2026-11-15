@@ -5,7 +5,7 @@ const fmt = n => new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format
 const clean = v => String(v).replace(/,/g,"").replace(/[^0-9.]/g,"");
 const grouped = v => {
  const raw=clean(v), [whole,...fraction]=raw.split(".");
- const formatted=whole.replace(/\\B(?=(\\d{3})+(?!\\d))/g,",");
+ const formatted=whole.replace(/\B(?=(\d{3})+(?!\d))/g,",");
  return formatted+(fraction.length?"."+fraction.join(""):"");
 };
 const numeric = v => Number(clean(v)) || 0;
@@ -25,7 +25,7 @@ function NumberField({value,onChange,decimal=false,...props}){
    const before=el.value.slice(0,position);
    pendingCaret.current=(before.match(/[0-9.]/g)||[]).length;
    const next=clean(el.value);
-   onChange(decimal?next:next.replace(/\\./g,""));
+   onChange(decimal?next:next.replace(/\./g,""));
   }}/>;
 }
 export default function NPCPriceCalculator(){
