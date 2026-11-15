@@ -54,9 +54,9 @@ export default function NPCPriceCalculator(){
  return <section className="npc-calc">
   <div className="npc-calc-head"><div><p className="kicker">RF ONLINE TOOLS / KALKULATOR</p><h2>Kalkulator Harga Jual ke NPC</h2><p className="sub">Cari StdPrice Excel berdasarkan target harga jual, max stack, dan pajak NPC.</p></div><span className="mono-chip">RUMUS RF ONLINE</span></div>
   <div className="npc-calc-grid"><div className="npc-calc-panel">
-   <label>Max Stack (pcs)<NumberField value={stack} onChange={e=>setStack(e.target.value)}/></label>
-   <label>Harga Jual ke NPC yang Diinginkan (Disena)<NumberField value={target} onChange={e=>setTarget(e.target.value)}/></label>
-   <label>Pajak NPC (%)<NumberField decimal value={tax} onChange={e=>setTax(e.target.value)}/></label>
+   <label>Max Stack (pcs)<NumberField value={stack} onChange={value=>setStack(value)}/></label>
+   <label>Harga Jual ke NPC yang Diinginkan (Disena)<NumberField value={target} onChange={value=>setTarget(value)}/></label>
+   <label>Pajak NPC (%)<NumberField decimal value={tax} onChange={value=>setTax(value)}/></label>
    <button type="button" className="ghost" onClick={()=>{setStack("250");setTarget("1000000");setTax("1");setTestPrice("8889")}}>Reset</button>
    <div className="npc-formula">Rumus: StdPrice = ROUNDUP(Target × 2 / (Max Stack × (1 − Pajak/100)))<p>Rumus diuji terhadap contoh Gold Pig Statue: StdPrice 8.889, stack 250, pajak 1%, hasil 1.100.013 Disena. Pembulatan harga jual diasumsikan ke bawah.</p></div>
   </div><div className="npc-calc-panel npc-calc-results">
@@ -67,7 +67,7 @@ export default function NPCPriceCalculator(){
     <div className="npc-stat npc-total"><span>Perkiraan Harga Jual Aktual</span><strong>{factor>0?fmt(actual):"—"} Disena</strong></div>
     <div className="npc-stat"><span>Selisih dari Target</span><strong>{factor>0?fmt(actual-wanted):"—"} Disena</strong></div>
     <div className="npc-formula">CEK HARGA DARI STDPRICE EXCEL</div>
-    <label>StdPrice Excel yang Ingin Diuji<NumberField value={testPrice} onChange={e=>setTestPrice(e.target.value)}/></label>
+    <label>StdPrice Excel yang Ingin Diuji<NumberField value={testPrice} onChange={value=>setTestPrice(value)}/></label>
     <div className="npc-result-primary"><span>Perkiraan Harga Jual ke NPC</span><strong>{fmt(testResult)} Disena</strong></div>
   </div></div>
  </section>;
