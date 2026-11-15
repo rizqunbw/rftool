@@ -10,22 +10,32 @@ const grouped = v => {
 };
 const numeric = v => Number(clean(v)) || 0;
 function NumberField({value,onChange,decimal=false,...props}){
- const ref=useRef(null),pendingCaret=useRef(null);
- const display=grouped(value);
+ const ref=useRef(null);
+ const previous=useRef(String(value));
  useLayoutEffect(()=>{
-  if(pendingCaret.current===null||!ref.current)return;
-  const digits=pendingCaret.current;let pos=0,count=0;
-  while(pos<display.length&&count<digits){if(/[0-9.]/.test(display[pos]))count++;pos++;}
-  ref.current.setSelectionRange(pos,pos);
-  pendingCaret.current=null;
- },[display]);
- return <input {...props} ref={ref} type="text" inputMode={decimal?"decimal":"numeric"} value={display}
-  onChange={e=>{
-   const el=e.currentTarget,position=el.selectionStart??el.value.length;
-   const before=el.value.slice(0,position);
-   pendingCaret.current=(before.match(/[0-9.]/g)||[]).length;
-   const next=clean(el.value);
-   onChange(decimal?next:next.replace(/\./g,""));
+  if(!ref.current)return;
+  if(String(value)!==previous.current){
+   ref.current.value=grouped(value);
+   previous.current=String(value);
+  }
+ },[value]);
+ return <input {...props} ref={ref} type="text" inputMode={decimal?"decimal":"numeric"}
+  defaultValue={grouped(value)}
+  onInput={e=>{
+   const el=e.currentTarget;
+   const caret=el.selectionStart??el.value.length;
+   const before=el.value.slice(0,caret);
+   const cleaned=clean(el.value);
+   const next=decimal?cleaned:cleaned.replace(/\./g,"");
+   const digitsBefore=(before.match(/[0-9]/g)||[]).length;
+   const formatted=grouped(next);
+   el.value=formatted;
+   let pos=0,count=0;
+   while(pos<formatted.length&&count<digitsBefore){if(/[0-9]/.test(formatted[pos]))count++;pos++;}
+   if(before.endsWith(".")&&decimal)pos=Math.min(formatted.length,pos+1);
+   el.setSelectionRange(pos,pos);
+   previous.current=next;
+   onChange(next);
   }}/>;
 }
 export default function NPCPriceCalculator(){
